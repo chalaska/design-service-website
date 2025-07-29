@@ -24,7 +24,7 @@ export default async function handler(
       customer_email: projectData?.email,
       line_items: [
         {
-          price: 'REPLACE_WITH_YOUR_PRICE_ID', // You'll change this next
+          price: 'price_1RqDt8LAh86wuJqu7T33T0aX', // You'll change this next
           quantity: 1,
         },
       ],
