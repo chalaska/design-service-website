@@ -13,27 +13,32 @@ const questions = [
   {
     key: 'whatToCreate' as keyof ProjectData,
     question: 'What do you want to create?',
-    placeholder: 'e.g., A mobile app, website, brand identity...'
+    placeholder: 'Type your project or select one below...',
+    chips: ['Product Design', 'Brand Identity', 'Website Design', 'Mobile App', 'Marketing Materials']
   },
   {
     key: 'whoIsItFor' as keyof ProjectData,
     question: 'Who is it for?',
-    placeholder: 'e.g., Tech startups, local restaurants, fitness enthusiasts...'
+    placeholder: 'e.g., Tech startups, local restaurants, fitness enthusiasts...',
+    chips: []
   },
   {
     key: 'goal' as keyof ProjectData,
     question: "What's the goal?",
-    placeholder: 'e.g., Increase conversions, build brand awareness, improve UX...'
+    placeholder: 'e.g., Increase conversions, build brand awareness, improve UX...',
+    chips: []
   },
   {
     key: 'feeling' as keyof ProjectData,
     question: 'How do you want it to feel?',
-    placeholder: 'e.g., Modern and clean, playful and vibrant, professional and trustworthy...'
+    placeholder: 'e.g., Modern and clean, playful and vibrant, professional and trustworthy...',
+    chips: []
   },
   {
     key: 'email' as keyof ProjectData,
     question: "What's your email?",
-    placeholder: 'your@email.com'
+    placeholder: 'your@email.com',
+    chips: []
   }
 ];
 
@@ -65,12 +70,42 @@ const commonQuestions = [
 ];
 
 const recentProjects = [
-  { name: "E-commerce website for sustainable fashion brand", icon: "🛍️" },
-  { name: "Mobile app for local food delivery service", icon: "📱" },
-  { name: "Brand identity for tech startup", icon: "⚡" },
-  { name: "Landing page for fitness coaching business", icon: "💪" },
-  { name: "Marketing materials for real estate agency", icon: "🏠" },
-  { name: "Logo design for artisan coffee roaster", icon: "☕" }
+  { 
+    name: "Sustainable fashion e-commerce platform", 
+    type: "Website", 
+    thumbnail: "🌿",
+    color: "bg-green-100"
+  },
+  { 
+    name: "Food delivery mobile application", 
+    type: "Product Design", 
+    thumbnail: "🍔",
+    color: "bg-orange-100"
+  },
+  { 
+    name: "Tech startup visual identity", 
+    type: "Brand", 
+    thumbnail: "⚡",
+    color: "bg-blue-100"
+  },
+  { 
+    name: "Fitness coaching business materials", 
+    type: "Brand", 
+    thumbnail: "💪",
+    color: "bg-purple-100"
+  },
+  { 
+    name: "Real estate marketing suite", 
+    type: "Marketing", 
+    thumbnail: "🏠",
+    color: "bg-gray-100"
+  },
+  { 
+    name: "Artisan coffee roaster branding", 
+    type: "Brand", 
+    thumbnail: "☕",
+    color: "bg-yellow-100"
+  }
 ];
 
 export default function Home() {
@@ -84,9 +119,12 @@ export default function Home() {
   });
   const [currentInput, setCurrentInput] = useState('');
   const [showFAQResult, setShowFAQResult] = useState<{question: string, answer: string} | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
 
   const handleNext = () => {
     if (currentInput.trim()) {
+      if (!hasStarted) setHasStarted(true);
+      
       const currentKey = questions[currentQuestion].key;
       setProjectData(prev => ({
         ...prev,
@@ -98,6 +136,25 @@ export default function Home() {
         setCurrentInput('');
       }
     }
+  };
+
+  const handleChipClick = (chipText: string) => {
+    setCurrentInput(chipText);
+    if (!hasStarted) setHasStarted(true);
+    
+    // Auto-advance after chip selection
+    setTimeout(() => {
+      const currentKey = questions[currentQuestion].key;
+      setProjectData(prev => ({
+        ...prev,
+        [currentKey]: chipText
+      }));
+      
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+        setCurrentInput('');
+      }
+    }, 300);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -114,6 +171,19 @@ export default function Home() {
 
   const handleSubmitAndPay = () => {
     window.open('https://buy.stripe.com/00waEY4T36vA4C6daffQI0w', '_blank');
+  };
+
+  const resetToHome = () => {
+    setCurrentQuestion(0);
+    setProjectData({
+      whatToCreate: '',
+      whoIsItFor: '',
+      goal: '',
+      feeling: '',
+      email: ''
+    });
+    setCurrentInput('');
+    setHasStarted(false);
   };
 
   if (showFAQResult) {
@@ -196,27 +266,30 @@ export default function Home() {
           {!isComplete ? (
             /* Question Flow */
             <div className="text-center">
-              <div className="mb-12">
-                <div className="flex justify-center mb-6">
-                  {questions.map((_, index) => (
-                    <div
-                      key={index}
-                      className={`w-2 h-2 rounded-full mx-1 ${
-                        index <= currentQuestion ? 'bg-gray-800' : 'bg-gray-300'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <p className="text-sm text-gray-400 mb-2 font-light">
-                  Question {currentQuestion + 1} of {questions.length}
-                </p>
-              </div>
-
               <h1 className="text-3xl md:text-4xl font-light text-gray-800 mb-12 leading-tight">
                 {questions[currentQuestion].question}
               </h1>
 
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-8">
+              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-8 relative">
+                {/* Progress in top right */}
+                {hasStarted && (
+                  <div className="absolute top-6 right-6 text-right">
+                    <div className="flex justify-end gap-1 mb-2">
+                      {questions.map((_, index) => (
+                        <div
+                          key={index}
+                          className={`w-2 h-2 rounded-full ${
+                            index <= currentQuestion ? 'bg-gray-800' : 'bg-gray-300'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-400 font-light">
+                      {currentQuestion + 1} of {questions.length}
+                    </p>
+                  </div>
+                )}
+
                 <input
                   type={questions[currentQuestion].key === 'email' ? 'email' : 'text'}
                   value={currentInput}
@@ -227,9 +300,26 @@ export default function Home() {
                   autoFocus
                 />
 
-                {/* Only FAQ Suggestion Chips */}
+                {/* Input Chips for first question */}
+                {currentQuestion === 0 && questions[currentQuestion].chips.length > 0 && (
+                  <div className="mt-4">
+                    <div className="flex flex-wrap gap-2">
+                      {questions[currentQuestion].chips.map((chip, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleChipClick(chip)}
+                          className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-full transition-colors font-light border border-gray-200"
+                        >
+                          {chip}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* FAQ Suggestion Chips for first question */}
                 {currentQuestion === 0 && (
-                  <div className="mt-6">
+                  <div className="mt-6 border-t border-gray-100 pt-6">
                     <p className="text-xs text-gray-400 mb-3 font-light uppercase tracking-wide">Common Questions</p>
                     <div className="flex flex-wrap gap-2">
                       {commonQuestions.slice(0, 3).map((faq, index) => (
@@ -246,35 +336,29 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="flex gap-4 justify-center">
-                {currentQuestion > 0 && (
-                  <button
-                    onClick={() => {
-                      setCurrentQuestion(currentQuestion - 1);
-                      setCurrentInput('');
-                    }}
-                    className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-4 px-6 rounded-xl transition-all"
-                  >
-                    Back
-                  </button>
-                )}
-                
-                <button
-                  onClick={() => {
-                    setCurrentQuestion(0);
-                    setProjectData({
-                      whatToCreate: '',
-                      whoIsItFor: '',
-                      goal: '',
-                      feeling: '',
-                      email: ''
-                    });
-                    setCurrentInput('');
-                  }}
-                  className="bg-white hover:bg-gray-100 text-gray-600 font-medium py-4 px-6 rounded-xl border border-gray-200 transition-all"
-                >
-                  Home
-                </button>
+              <div className="flex gap-4 justify-between">
+                <div className="flex gap-4">
+                  {hasStarted && currentQuestion > 0 && (
+                    <button
+                      onClick={() => {
+                        setCurrentQuestion(currentQuestion - 1);
+                        setCurrentInput('');
+                      }}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-4 px-6 rounded-xl transition-all"
+                    >
+                      Back
+                    </button>
+                  )}
+                  
+                  {hasStarted && (
+                    <button
+                      onClick={resetToHome}
+                      className="bg-white hover:bg-gray-100 text-gray-600 font-medium py-4 px-6 rounded-xl border border-gray-200 transition-all"
+                    >
+                      Home
+                    </button>
+                  )}
+                </div>
                 
                 <button
                   onClick={handleNext}
@@ -344,17 +428,7 @@ export default function Home() {
               </div>
 
               <button
-                onClick={() => {
-                  setCurrentQuestion(0);
-                  setProjectData({
-                    whatToCreate: '',
-                    whoIsItFor: '',
-                    goal: '',
-                    feeling: '',
-                    email: ''
-                  });
-                  setCurrentInput('');
-                }}
+                onClick={resetToHome}
                 className="text-gray-400 hover:text-gray-600 font-light transition-colors"
               >
                 Start over
@@ -396,16 +470,11 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Recent Projects Section - Always at bottom */}
-          <div className="mt-12 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <h3 className="text-sm font-light text-gray-600">Recent Projects</h3>
-            </div>
+          {/* Recent Projects Section - Card Layout */}
+          <div className="mt-12">
+            <h3 className="text-lg font-light text-gray-600 mb-6 text-center">Recent Projects</h3>
             
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {recentProjects.map((project, index) => (
                 <button
                   key={index}
@@ -419,11 +488,21 @@ export default function Home() {
                       feeling: '',
                       email: ''
                     });
+                    setHasStarted(true);
                   }}
-                  className="flex items-center gap-2 text-sm bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-full transition-colors border border-gray-200"
+                  className="bg-white rounded-2xl p-4 border border-gray-100 hover:border-gray-200 transition-colors group text-left"
                 >
-                  <span className="text-base">{project.icon}</span>
-                  <span className="truncate max-w-xs font-light">{project.name}</span>
+                  <div className={`${project.color} rounded-xl h-24 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform`}>
+                    <span className="text-2xl">{project.thumbnail}</span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                      {project.type}
+                    </span>
+                    <span className="text-sm font-light text-gray-700 leading-tight">
+                      {project.name}
+                    </span>
+                  </div>
                 </button>
               ))}
             </div>
