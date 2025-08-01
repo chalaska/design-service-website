@@ -105,6 +105,42 @@ const recentProjects = [
     type: "Brand", 
     thumbnail: "☕",
     color: "bg-yellow-100"
+  },
+  {
+    name: "Healthcare app user interface",
+    type: "Product Design",
+    thumbnail: "⚕️",
+    color: "bg-red-100"
+  },
+  {
+    name: "Restaurant chain rebrand",
+    type: "Brand",
+    thumbnail: "🍽️",
+    color: "bg-orange-100"
+  },
+  {
+    name: "Financial services dashboard",
+    type: "Website",
+    thumbnail: "💰",
+    color: "bg-green-100"
+  },
+  {
+    name: "Educational platform design",
+    type: "Product Design",
+    thumbnail: "📚",
+    color: "bg-blue-100"
+  },
+  {
+    name: "Music streaming app interface",
+    type: "Product Design",
+    thumbnail: "🎵",
+    color: "bg-purple-100"
+  },
+  {
+    name: "Travel booking website",
+    type: "Website",
+    thumbnail: "✈️",
+    color: "bg-sky-100"
   }
 ];
 
@@ -124,6 +160,8 @@ export default function Home() {
   const [selectedChips, setSelectedChips] = useState<string[]>([]);
   const [availableChips, setAvailableChips] = useState<string[]>(questions[0].chips);
   const [isFocused, setIsFocused] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [projectsToShow, setProjectsToShow] = useState(6);
 
   const handleNext = () => {
     if (currentInput.trim()) {
@@ -307,7 +345,10 @@ export default function Home() {
               </button>
               <button 
                 onClick={() => {
-                  document.querySelector('.contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                  setShowContactForm(true);
+                  setTimeout(() => {
+                    document.querySelector('.contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
                   setMenuOpen(false);
                 }}
                 className="block w-full text-right text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
@@ -404,7 +445,7 @@ export default function Home() {
               </div>
 
               <div className="flex gap-4 justify-between">
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center">
                   {hasStarted && currentQuestion > 0 && (
                     <button
                       onClick={() => {
@@ -415,8 +456,11 @@ export default function Home() {
                           setIsFocused(false);
                         }
                       }}
-                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-4 px-6 rounded-xl transition-all"
+                      className="flex items-center gap-2 text-gray-600 hover:text-gray-800 font-light transition-colors"
                     >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
                       Back
                     </button>
                   )}
@@ -424,9 +468,11 @@ export default function Home() {
                   {hasStarted && (
                     <button
                       onClick={resetToHome}
-                      className="bg-white hover:bg-gray-100 text-gray-600 font-medium py-4 px-6 rounded-xl border border-gray-200 transition-all"
+                      className="w-10 h-10 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-800 rounded-full border border-gray-200 transition-all flex items-center justify-center"
                     >
-                      Home
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      </svg>
                     </button>
                   )}
                 </div>
@@ -490,7 +536,10 @@ export default function Home() {
                 
                 <button
                   onClick={() => {
-                    document.querySelector('.contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                    setShowContactForm(true);
+                    setTimeout(() => {
+                      document.querySelector('.contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
                   }}
                   className="block w-full bg-white hover:bg-gray-100 text-gray-800 font-medium py-4 px-8 rounded-xl border border-gray-200 transition-all text-center"
                 >
@@ -564,7 +613,7 @@ export default function Home() {
             <h3 className="text-lg font-light text-gray-600 mb-6 text-center">Recent Projects</h3>
             
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {recentProjects.map((project, index) => (
+              {recentProjects.slice(0, projectsToShow).map((project, index) => (
                 <button
                   key={index}
                   onClick={() => {
@@ -595,86 +644,125 @@ export default function Home() {
                 </button>
               ))}
             </div>
+
+            {/* Load More Button */}
+            {projectsToShow < recentProjects.length && (
+              <div className="text-center mt-8">
+                <button
+                  onClick={() => setProjectsToShow(prev => Math.min(prev + 6, recentProjects.length))}
+                  className="bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-800 font-medium py-3 px-6 rounded-xl border border-gray-200 transition-all"
+                >
+                  Load more projects
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Contact Form Section */}
           <div className="mt-16 contact-form">
-            <div className="bg-white rounded-2xl p-8 border border-gray-100">
-              <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">Get in Touch</h3>
-              <p className="text-center text-gray-600 font-light mb-8">
-                Ready to start your project? Send us a message and we'll get back to you within 24 hours.
-              </p>
-              
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
-                      placeholder="Your name"
-                    />
+            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all duration-500">
+              {!showContactForm ? (
+                /* Contact Card */
+                <div className="p-8 text-center">
+                  <h3 className="text-2xl font-light text-gray-800 mb-4">Ready to work together?</h3>
+                  <p className="text-gray-600 font-light mb-6 leading-relaxed">
+                    Let's discuss your project and see how we can help bring your vision to life. 
+                    We typically respond within 24 hours.
+                  </p>
+                  <button
+                    onClick={() => setShowContactForm(true)}
+                    className="bg-gray-800 hover:bg-gray-900 text-white font-medium py-4 px-8 rounded-xl transition-all"
+                  >
+                    Get in touch
+                  </button>
+                </div>
+              ) : (
+                /* Contact Form */
+                <div className="p-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-2xl font-light text-gray-800">Send us a message</h3>
+                    <button
+                      onClick={() => setShowContactForm(false)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
-                      placeholder="your@email.com"
-                    />
-                  </div>
+                  
+                  <form className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                          Name
+                        </label>
+                        <input
+                          type="text"
+                          className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
+                          placeholder="Your name"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
+                          placeholder="your@email.com"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                        Project Type
+                      </label>
+                      <select className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light">
+                        <option>Select project type</option>
+                        <option>Brand Identity</option>
+                        <option>Website Design</option>
+                        <option>Product Design</option>
+                        <option>Mobile App</option>
+                        <option>Marketing Materials</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                        Tell us about your project
+                      </label>
+                      <textarea
+                        rows={4}
+                        className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light resize-none"
+                        placeholder="Describe your project, goals, and any specific requirements..."
+                      ></textarea>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                        Timeline
+                      </label>
+                      <select className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light">
+                        <option>Select timeline</option>
+                        <option>Rush (1-2 weeks)</option>
+                        <option>Standard (2-4 weeks)</option>
+                        <option>Flexible (1-2 months)</option>
+                        <option>Not sure</option>
+                      </select>
+                    </div>
+                    
+                    <button
+                      type="submit"
+                      className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-4 px-8 rounded-xl transition-all"
+                    >
+                      Send Message
+                    </button>
+                  </form>
                 </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
-                    Project Type
-                  </label>
-                  <select className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light">
-                    <option>Select project type</option>
-                    <option>Brand Identity</option>
-                    <option>Website Design</option>
-                    <option>Product Design</option>
-                    <option>Mobile App</option>
-                    <option>Marketing Materials</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
-                    Tell us about your project
-                  </label>
-                  <textarea
-                    rows={4}
-                    className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light resize-none"
-                    placeholder="Describe your project, goals, and any specific requirements..."
-                  ></textarea>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
-                    Timeline
-                  </label>
-                  <select className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light">
-                    <option>Select timeline</option>
-                    <option>Rush (1-2 weeks)</option>
-                    <option>Standard (2-4 weeks)</option>
-                    <option>Flexible (1-2 months)</option>
-                    <option>Not sure</option>
-                  </select>
-                </div>
-                
-                <button
-                  type="submit"
-                  className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-4 px-8 rounded-xl transition-all"
-                >
-                  Send Message
-                </button>
-              </form>
+              )}
             </div>
           </div>
 
