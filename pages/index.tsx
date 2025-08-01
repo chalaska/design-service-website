@@ -18,7 +18,7 @@ const questions = [
   },
   {
     key: 'whoIsItFor' as keyof ProjectData,
-    question: 'Who is it for?',
+    question: 'Who is the intended audience?',
     placeholder: 'e.g., Tech startups, local restaurants, fitness enthusiasts...',
     chips: []
   },
@@ -123,6 +123,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedChips, setSelectedChips] = useState<string[]>([]);
   const [availableChips, setAvailableChips] = useState<string[]>(questions[0].chips);
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleNext = () => {
     if (currentInput.trim()) {
@@ -139,6 +140,10 @@ export default function Home() {
         setCurrentInput('');
         setSelectedChips([]);
         setAvailableChips(questions[currentQuestion + 1]?.chips || []);
+        // Enable focus mode when moving to question 2 or beyond
+        if (currentQuestion + 1 >= 1) {
+          setIsFocused(true);
+        }
       }
     }
   };
@@ -183,6 +188,7 @@ export default function Home() {
     setCurrentInput('');
     setHasStarted(false);
     setAvailableChips(questions[0].chips);
+    setIsFocused(false);
   };
 
   if (showFAQResult) {
@@ -258,9 +264,17 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </Head>
 
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6" style={{ fontFamily: 'Geist, system-ui, -apple-system, sans-serif' }}>
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6 relative" style={{ fontFamily: 'Geist, system-ui, -apple-system, sans-serif' }}>
+        {/* Overlay for focus mode */}
+        {isFocused && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-30 z-5 transition-opacity duration-300"
+            onClick={() => setIsFocused(false)}
+          />
+        )}
+
         {/* Menu */}
-        <div className="fixed top-6 right-6 z-10">
+        <div className={`fixed top-6 right-6 z-10 transition-opacity duration-300 ${isFocused ? 'opacity-30' : 'opacity-100'}`}>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors mb-2"
@@ -304,10 +318,10 @@ export default function Home() {
           )}
         </div>
 
-        <div className="w-full max-w-2xl">
+        <div className={`w-full max-w-2xl transition-opacity duration-300 ${isFocused && !isComplete ? 'relative z-20' : ''}`}>
           
           {/* Logo Section */}
-          <div className="text-center mb-16">
+          <div className={`text-center mb-16 transition-opacity duration-300 ${isFocused && !isComplete ? 'opacity-30' : 'opacity-100'}`}>
             <div className="text-8xl font-extralight text-gray-800 mb-4 tracking-wider">—</div>
             <div className="text-2xl font-light text-gray-700 mb-2 tracking-wide">em-dash</div>
             <div className="text-gray-500 font-light">Professional Design Service</div>
@@ -315,8 +329,8 @@ export default function Home() {
 
           {!isComplete ? (
             /* Question Flow */
-            <div className="text-center">
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-8 relative">
+            <div className={`text-center transition-opacity duration-300 ${isFocused ? 'relative z-30' : ''}`}>
+              <div className={`bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-8 relative ${isFocused ? 'shadow-2xl' : ''} transition-shadow duration-300`}>
                 {/* Progress in top right */}
                 {hasStarted && (
                   <div className="absolute top-6 right-6 text-right">
@@ -396,6 +410,10 @@ export default function Home() {
                       onClick={() => {
                         setCurrentQuestion(currentQuestion - 1);
                         setCurrentInput('');
+                        // Disable focus mode if going back to question 1
+                        if (currentQuestion - 1 === 0) {
+                          setIsFocused(false);
+                        }
                       }}
                       className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-4 px-6 rounded-xl transition-all"
                     >
@@ -510,8 +528,10 @@ export default function Home() {
             </div>
           )}
 
-          {/* Halaska Method */}
-          <div className="mt-16 text-center halaska-method">
+          {/* Sections with dimming effect */}
+          <div className={`transition-opacity duration-300 ${isFocused && !isComplete ? 'opacity-30' : 'opacity-100'}`}>
+            {/* Halaska Method */}
+            <div className="mt-16 text-center halaska-method">
             <div className="bg-white rounded-2xl p-8 border border-gray-100">
               <h3 className="text-lg font-light text-gray-700 mb-2">
                 Powered by the Halaska Method™
@@ -658,7 +678,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="h-16"></div>
+            <div className="h-16"></div>
+          </div>
         </div>
       </main>
     </>
