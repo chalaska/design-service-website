@@ -121,41 +121,42 @@ export default function Home() {
   const [showFAQResult, setShowFAQResult] = useState<{question: string, answer: string} | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedChips, setSelectedChips] = useState<string[]>([]);
+  const [availableChips, setAvailableChips] = useState<string[]>(questions[0].chips);
 
   const handleNext = () => {
-    if (currentInput.trim()) {
+    const finalInput = selectedChips.length > 0 
+      ? [...selectedChips, currentInput].filter(Boolean).join(', ')
+      : currentInput.trim();
+      
+    if (finalInput) {
       if (!hasStarted) setHasStarted(true);
       
       const currentKey = questions[currentQuestion].key;
       setProjectData(prev => ({
         ...prev,
-        [currentKey]: currentInput.trim()
+        [currentKey]: finalInput
       }));
       
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
         setCurrentInput('');
+        setSelectedChips([]);
+        setAvailableChips(questions[currentQuestion + 1]?.chips || []);
       }
     }
   };
 
-  const handleChipClick = (chipText: string) => {
-    setCurrentInput(chipText);
+  const handleChipSelect = (chipText: string) => {
     if (!hasStarted) setHasStarted(true);
     
-    // Auto-advance after chip selection
-    setTimeout(() => {
-      const currentKey = questions[currentQuestion].key;
-      setProjectData(prev => ({
-        ...prev,
-        [currentKey]: chipText
-      }));
-      
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-        setCurrentInput('');
-      }
-    }, 300);
+    setSelectedChips(prev => [...prev, chipText]);
+    setAvailableChips(prev => prev.filter(chip => chip !== chipText));
+  };
+
+  const handleChipRemove = (chipText: string) => {
+    setSelectedChips(prev => prev.filter(chip => chip !== chipText));
+    setAvailableChips(prev => [...prev, chipText]);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -185,6 +186,8 @@ export default function Home() {
     });
     setCurrentInput('');
     setHasStarted(false);
+    setSelectedChips([]);
+    setAvailableChips(questions[0].chips);
   };
 
   if (showFAQResult) {
@@ -346,24 +349,46 @@ export default function Home() {
                   {questions[currentQuestion].question}
                 </h1>
 
+                {/* Selected chips in input area */}
+                {selectedChips.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    {selectedChips.map((chip, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 bg-gray-800 text-white px-3 py-2 rounded-full text-sm font-light"
+                      >
+                        <span>{chip}</span>
+                        <button
+                          onClick={() => handleChipRemove(chip)}
+                          className="hover:bg-gray-700 rounded-full p-0.5 transition-colors"
+                        >
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <input
                   type={questions[currentQuestion].key === 'email' ? 'email' : 'text'}
                   value={currentInput}
                   onChange={(e) => setCurrentInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder={questions[currentQuestion].placeholder}
+                  placeholder={selectedChips.length > 0 ? "Add more details..." : questions[currentQuestion].placeholder}
                   className="w-full text-lg p-6 border border-gray-200 rounded-2xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
                   autoFocus
                 />
 
-                {/* Input Chips for first question */}
-                {currentQuestion === 0 && questions[currentQuestion].chips.length > 0 && (
+                {/* Available chips for first question */}
+                {currentQuestion === 0 && availableChips.length > 0 && (
                   <div className="mt-4">
                     <div className="flex flex-wrap gap-2">
-                      {questions[currentQuestion].chips.map((chip, index) => (
+                      {availableChips.map((chip, index) => (
                         <button
                           key={index}
-                          onClick={() => handleChipClick(chip)}
+                          onClick={() => handleChipSelect(chip)}
                           className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-full transition-colors font-light border border-gray-200"
                         >
                           {chip}
@@ -418,7 +443,7 @@ export default function Home() {
                 
                 <button
                   onClick={handleNext}
-                  disabled={!currentInput.trim()}
+                  disabled={!currentInput.trim() && selectedChips.length === 0}
                   className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-4 px-8 rounded-xl transition-all disabled:hover:scale-100"
                 >
                   {currentQuestion === questions.length - 1 ? 'Complete' : 'Continue'}
