@@ -12,7 +12,7 @@ interface ProjectData {
 const questions = [
   {
     key: 'whatToCreate' as keyof ProjectData,
-    question: 'What do you want to create?',
+    question: 'What do you need designed?',
     placeholder: 'Type your project or select one below...',
     chips: ['Product Design', 'Brand Identity', 'Website Design', 'Mobile App', 'Marketing Materials']
   },
@@ -120,6 +120,7 @@ export default function Home() {
   const [currentInput, setCurrentInput] = useState('');
   const [showFAQResult, setShowFAQResult] = useState<{question: string, answer: string} | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleNext = () => {
     if (currentInput.trim()) {
@@ -260,6 +261,70 @@ export default function Home() {
       </Head>
 
       <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6" style={{ fontFamily: 'Geist, system-ui, -apple-system, sans-serif' }}>
+        {/* Menu */}
+        <div className="fixed top-6 right-6 z-10">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
+          >
+            <span className="text-xs font-light uppercase tracking-wide">MENU</span>
+            <span className="text-lg font-extralight">—</span>
+          </button>
+          
+          {menuOpen && (
+            <div className="absolute top-8 right-0 bg-white rounded-2xl shadow-lg border border-gray-100 p-4 min-w-48">
+              <div className="space-y-3">
+                <button 
+                  onClick={() => {
+                    handleFAQClick(commonQuestions[0]);
+                    setMenuOpen(false);
+                  }}
+                  className="block w-full text-left text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  How we work
+                </button>
+                <button 
+                  onClick={() => {
+                    handleFAQClick(commonQuestions[4]);
+                    setMenuOpen(false);
+                  }}
+                  className="block w-full text-left text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  Who we're for
+                </button>
+                <button 
+                  onClick={() => {
+                    handleFAQClick(commonQuestions[1]);
+                    setMenuOpen(false);
+                  }}
+                  className="block w-full text-left text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  How much
+                </button>
+                <button 
+                  onClick={() => {
+                    // Scroll to recent projects section
+                    document.querySelector('.recent-projects')?.scrollIntoView({ behavior: 'smooth' });
+                    setMenuOpen(false);
+                  }}
+                  className="block w-full text-left text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  Past clients
+                </button>
+                <a 
+                  href="https://calendly.com/your-calendly-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMenuOpen(false)}
+                  className="block w-full text-left text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  Get in touch
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="w-full max-w-2xl">
           
           {/* Logo Section */}
@@ -272,10 +337,6 @@ export default function Home() {
           {!isComplete ? (
             /* Question Flow */
             <div className="text-center">
-              <h1 className="text-3xl md:text-4xl font-light text-gray-800 mb-12 leading-tight">
-                {questions[currentQuestion].question}
-              </h1>
-
               <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-8 relative">
                 {/* Progress in top right */}
                 {hasStarted && (
@@ -284,10 +345,12 @@ export default function Home() {
                       {questions.map((_, index) => (
                         <div
                           key={index}
-                          className={`w-2 h-2 rounded-full ${
-                            index <= currentQuestion ? 'bg-gray-800' : 'bg-gray-300'
+                          className={`text-lg font-extralight ${
+                            index <= currentQuestion ? 'text-gray-800' : 'text-gray-300'
                           }`}
-                        />
+                        >
+                          —
+                        </div>
                       ))}
                     </div>
                     <p className="text-xs text-gray-400 font-light">
@@ -295,6 +358,11 @@ export default function Home() {
                     </p>
                   </div>
                 )}
+
+                {/* Question title inside the box */}
+                <h1 className="text-2xl md:text-3xl font-light text-gray-800 mb-6 leading-tight">
+                  {questions[currentQuestion].question}
+                </h1>
 
                 <input
                   type={questions[currentQuestion].key === 'email' ? 'email' : 'text'}
@@ -332,7 +400,7 @@ export default function Home() {
                         <button
                           key={index}
                           onClick={() => handleFAQClick(faq)}
-                          className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-full transition-colors font-light"
+                          className="text-sm bg-transparent hover:bg-gray-50 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-full transition-colors font-light border border-gray-300"
                         >
                           {faq.question}
                         </button>
@@ -477,7 +545,7 @@ export default function Home() {
           </div>
 
           {/* Recent Projects Section - Card Layout */}
-          <div className="mt-12">
+          <div className="mt-12 recent-projects">
             <h3 className="text-lg font-light text-gray-600 mb-6 text-center">Recent Projects</h3>
             
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
