@@ -264,13 +264,44 @@ export default function Home() {
                 )}
               </div>
 
-              <button
-                onClick={handleNext}
-                disabled={!currentInput.trim()}
-                className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-4 px-8 rounded-xl transition-all disabled:hover:scale-100"
-              >
-                {currentQuestion === questions.length - 1 ? 'Complete' : 'Continue'}
-              </button>
+              <div className="flex gap-4 justify-center">
+                {currentQuestion > 0 && (
+                  <button
+                    onClick={() => {
+                      setCurrentQuestion(currentQuestion - 1);
+                      setCurrentInput('');
+                    }}
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-4 px-6 rounded-xl transition-all"
+                  >
+                    Back
+                  </button>
+                )}
+                
+                <button
+                  onClick={() => {
+                    setCurrentQuestion(0);
+                    setProjectData({
+                      whatToCreate: '',
+                      whoIsItFor: '',
+                      goal: '',
+                      feeling: '',
+                      email: ''
+                    });
+                    setCurrentInput('');
+                  }}
+                  className="bg-white hover:bg-gray-100 text-gray-600 font-medium py-4 px-6 rounded-xl border border-gray-200 transition-all"
+                >
+                  Home
+                </button>
+                
+                <button
+                  onClick={handleNext}
+                  disabled={!currentInput.trim()}
+                  className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-4 px-8 rounded-xl transition-all disabled:hover:scale-100"
+                >
+                  {currentQuestion === questions.length - 1 ? 'Complete' : 'Continue'}
+                </button>
+              </div>
             </div>
           ) : (
             /* Project Brief & Actions */
@@ -349,6 +380,27 @@ export default function Home() {
             </div>
           )}
 
+          {/* FAQ Section - Show after completion */}
+          {isComplete && (
+            <div className="mt-12 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-lg font-light text-gray-700 mb-6">
+                Questions & Answers
+              </h2>
+              
+              <div className="grid gap-3">
+                {commonQuestions.map((faq, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleFAQClick(faq)}
+                    className="text-left p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100"
+                  >
+                    <span className="font-light text-gray-700">{faq.question}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Halaska Method */}
           <div className="mt-16 text-center">
             <div className="bg-white rounded-2xl p-8 border border-gray-100">
@@ -359,6 +411,39 @@ export default function Home() {
                 A design approach built from years of experience by Chris Halaska<br />
                 and the knowledge base from Halaska Studio
               </p>
+            </div>
+          </div>
+
+          {/* Recent Projects Section - Always at bottom */}
+          <div className="mt-12 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 className="text-sm font-light text-gray-600">Recent Projects</h3>
+            </div>
+            
+            <div className="flex flex-wrap gap-2">
+              {recentProjects.map((project, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setCurrentQuestion(0);
+                    setCurrentInput(project.name);
+                    setProjectData({
+                      whatToCreate: '',
+                      whoIsItFor: '',
+                      goal: '',
+                      feeling: '',
+                      email: ''
+                    });
+                  }}
+                  className="flex items-center gap-2 text-sm bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-full transition-colors border border-gray-200"
+                >
+                  <span className="text-base">{project.icon}</span>
+                  <span className="truncate max-w-xs font-light">{project.name}</span>
+                </button>
+              ))}
             </div>
           </div>
 
