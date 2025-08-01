@@ -125,17 +125,13 @@ export default function Home() {
   const [availableChips, setAvailableChips] = useState<string[]>(questions[0].chips);
 
   const handleNext = () => {
-    const finalInput = selectedChips.length > 0 
-      ? [...selectedChips, currentInput].filter(Boolean).join(', ')
-      : currentInput.trim();
-      
-    if (finalInput) {
+    if (currentInput.trim()) {
       if (!hasStarted) setHasStarted(true);
       
       const currentKey = questions[currentQuestion].key;
       setProjectData(prev => ({
         ...prev,
-        [currentKey]: finalInput
+        [currentKey]: currentInput.trim()
       }));
       
       if (currentQuestion < questions.length - 1) {
@@ -150,13 +146,13 @@ export default function Home() {
   const handleChipSelect = (chipText: string) => {
     if (!hasStarted) setHasStarted(true);
     
-    setSelectedChips(prev => [...prev, chipText]);
+    // Add chip text to current input, separated by comma if there's existing text
+    const newInput = currentInput.trim() 
+      ? `${currentInput.trim()}, ${chipText}`
+      : chipText;
+    
+    setCurrentInput(newInput);
     setAvailableChips(prev => prev.filter(chip => chip !== chipText));
-  };
-
-  const handleChipRemove = (chipText: string) => {
-    setSelectedChips(prev => prev.filter(chip => chip !== chipText));
-    setAvailableChips(prev => [...prev, chipText]);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -186,7 +182,6 @@ export default function Home() {
     });
     setCurrentInput('');
     setHasStarted(false);
-    setSelectedChips([]);
     setAvailableChips(questions[0].chips);
   };
 
@@ -280,7 +275,7 @@ export default function Home() {
             <div className="text-right space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
               <button 
                 onClick={() => {
-                  handleFAQClick(commonQuestions[0]);
+                  document.querySelector('.halaska-method')?.scrollIntoView({ behavior: 'smooth' });
                   setMenuOpen(false);
                 }}
                 className="block w-full text-right text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
@@ -289,7 +284,6 @@ export default function Home() {
               </button>
               <button 
                 onClick={() => {
-                  // Scroll to recent projects section
                   document.querySelector('.recent-projects')?.scrollIntoView({ behavior: 'smooth' });
                   setMenuOpen(false);
                 }}
@@ -297,15 +291,15 @@ export default function Home() {
               >
                 Past clients
               </button>
-              <a 
-                href="https://calendly.com/your-calendly-link"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMenuOpen(false)}
+              <button 
+                onClick={() => {
+                  document.querySelector('.contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                  setMenuOpen(false);
+                }}
                 className="block w-full text-right text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
               >
                 Get in touch
-              </a>
+              </button>
             </div>
           )}
         </div>
@@ -344,39 +338,17 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* Question title inside the box */}
-                <h1 className="text-2xl md:text-3xl font-light text-gray-800 mb-6 leading-tight">
+                {/* Question title inside the box - left aligned */}
+                <h1 className="text-2xl md:text-3xl font-light text-gray-800 mb-6 leading-tight text-left">
                   {questions[currentQuestion].question}
                 </h1>
-
-                {/* Selected chips in input area */}
-                {selectedChips.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                    {selectedChips.map((chip, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-2 bg-gray-800 text-white px-3 py-2 rounded-full text-sm font-light"
-                      >
-                        <span>{chip}</span>
-                        <button
-                          onClick={() => handleChipRemove(chip)}
-                          className="hover:bg-gray-700 rounded-full p-0.5 transition-colors"
-                        >
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
 
                 <input
                   type={questions[currentQuestion].key === 'email' ? 'email' : 'text'}
                   value={currentInput}
                   onChange={(e) => setCurrentInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder={selectedChips.length > 0 ? "Add more details..." : questions[currentQuestion].placeholder}
+                  placeholder={questions[currentQuestion].placeholder}
                   className="w-full text-lg p-6 border border-gray-200 rounded-2xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
                   autoFocus
                 />
@@ -443,7 +415,7 @@ export default function Home() {
                 
                 <button
                   onClick={handleNext}
-                  disabled={!currentInput.trim() && selectedChips.length === 0}
+                  disabled={!currentInput.trim()}
                   className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-4 px-8 rounded-xl transition-all disabled:hover:scale-100"
                 >
                   {currentQuestion === questions.length - 1 ? 'Complete' : 'Continue'}
@@ -498,14 +470,14 @@ export default function Home() {
                   Submit & Pay - $99/month
                 </button>
                 
-                <a
-                  href="https://calendly.com/your-calendly-link"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => {
+                    document.querySelector('.contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   className="block w-full bg-white hover:bg-gray-100 text-gray-800 font-medium py-4 px-8 rounded-xl border border-gray-200 transition-all text-center"
                 >
-                  Book a Call
-                </a>
+                  Get in touch
+                </button>
               </div>
 
               <button
@@ -539,15 +511,31 @@ export default function Home() {
           )}
 
           {/* Halaska Method */}
-          <div className="mt-16 text-center">
+          <div className="mt-16 text-center halaska-method">
             <div className="bg-white rounded-2xl p-8 border border-gray-100">
               <h3 className="text-lg font-light text-gray-700 mb-2">
                 Powered by the Halaska Method™
               </h3>
-              <p className="text-sm text-gray-500 font-light leading-relaxed">
+              <p className="text-sm text-gray-500 font-light leading-relaxed mb-6">
                 A design approach built from years of experience by Chris Halaska<br />
                 and the knowledge base from Halaska Studio
               </p>
+              
+              {/* How we work details */}
+              <div className="text-left space-y-4 border-t border-gray-100 pt-6">
+                <div>
+                  <h4 className="font-medium text-gray-700 mb-2">Discovery & Strategy</h4>
+                  <p className="text-sm text-gray-600 font-light">We start with understanding your business, audience, and goals through a comprehensive brief and research phase.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-700 mb-2">Design & Iteration</h4>
+                  <p className="text-sm text-gray-600 font-light">Initial concepts delivered within 3-5 days, followed by unlimited revisions until you're completely satisfied.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-700 mb-2">Delivery & Support</h4>
+                  <p className="text-sm text-gray-600 font-light">Final files delivered with ongoing support included. Most projects completed within 2-3 weeks.</p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -586,6 +574,87 @@ export default function Home() {
                   </div>
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Contact Form Section */}
+          <div className="mt-16 contact-form">
+            <div className="bg-white rounded-2xl p-8 border border-gray-100">
+              <h3 className="text-2xl font-light text-gray-800 mb-6 text-center">Get in Touch</h3>
+              <p className="text-center text-gray-600 font-light mb-8">
+                Ready to start your project? Send us a message and we'll get back to you within 24 hours.
+              </p>
+              
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    Project Type
+                  </label>
+                  <select className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light">
+                    <option>Select project type</option>
+                    <option>Brand Identity</option>
+                    <option>Website Design</option>
+                    <option>Product Design</option>
+                    <option>Mobile App</option>
+                    <option>Marketing Materials</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    Tell us about your project
+                  </label>
+                  <textarea
+                    rows={4}
+                    className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light resize-none"
+                    placeholder="Describe your project, goals, and any specific requirements..."
+                  ></textarea>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    Timeline
+                  </label>
+                  <select className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light">
+                    <option>Select timeline</option>
+                    <option>Rush (1-2 weeks)</option>
+                    <option>Standard (2-4 weeks)</option>
+                    <option>Flexible (1-2 months)</option>
+                    <option>Not sure</option>
+                  </select>
+                </div>
+                
+                <button
+                  type="submit"
+                  className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-4 px-8 rounded-xl transition-all"
+                >
+                  Send Message
+                </button>
+              </form>
             </div>
           </div>
 
