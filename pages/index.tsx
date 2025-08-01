@@ -162,6 +162,7 @@ export default function Home() {
   const [isFocused, setIsFocused] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
   const [projectsToShow, setProjectsToShow] = useState(6);
+  const [faqModal, setFaqModal] = useState<{question: string, answer: string} | null>(null);
 
   const handleNext = () => {
     if (currentInput.trim()) {
@@ -205,7 +206,7 @@ export default function Home() {
   };
 
   const handleFAQClick = (faq: {question: string, answer: string}) => {
-    setShowFAQResult(faq);
+    setFaqModal(faq);
   };
 
   const isComplete = currentQuestion === questions.length - 1 && projectData.email;
@@ -303,6 +304,24 @@ export default function Home() {
       </Head>
 
       <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6 relative" style={{ fontFamily: 'Geist, system-ui, -apple-system, sans-serif' }}>
+        {/* FAQ Modal */}
+        {faqModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl p-8 max-w-md w-full relative">
+              <button
+                onClick={() => setFaqModal(null)}
+                className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <h3 className="text-lg font-medium text-gray-800 mb-4 pr-8">{faqModal.question}</h3>
+              <p className="text-gray-600 font-light leading-relaxed">{faqModal.answer}</p>
+            </div>
+          </div>
+        )}
+
         {/* Overlay for focus mode */}
         {isFocused && (
           <div 
@@ -354,6 +373,15 @@ export default function Home() {
                 className="block w-full text-right text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
               >
                 Get in touch
+              </button>
+              <button 
+                onClick={() => {
+                  resetToHome();
+                  setMenuOpen(false);
+                }}
+                className="block w-full text-right text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
+              >
+                Home
               </button>
             </div>
           )}
@@ -433,7 +461,7 @@ export default function Home() {
                       {commonQuestions.slice(0, 3).map((faq, index) => (
                         <button
                           key={index}
-                          onClick={() => handleFAQClick(faq)}
+                          onClick={() => setFaqModal(faq)}
                           className="text-sm bg-transparent hover:bg-gray-50 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-full transition-colors font-light border border-gray-300"
                         >
                           {faq.question}
@@ -446,6 +474,17 @@ export default function Home() {
 
               <div className="flex gap-4 justify-between">
                 <div className="flex gap-4 items-center">
+                  {hasStarted && (
+                    <button
+                      onClick={resetToHome}
+                      className="w-10 h-10 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-800 rounded-full border border-gray-200 transition-all flex items-center justify-center"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      </svg>
+                    </button>
+                  )}
+
                   {hasStarted && currentQuestion > 0 && (
                     <button
                       onClick={() => {
@@ -462,17 +501,6 @@ export default function Home() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                       Back
-                    </button>
-                  )}
-                  
-                  {hasStarted && (
-                    <button
-                      onClick={resetToHome}
-                      className="w-10 h-10 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-800 rounded-full border border-gray-200 transition-all flex items-center justify-center"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                      </svg>
                     </button>
                   )}
                 </div>
@@ -567,7 +595,7 @@ export default function Home() {
                 {commonQuestions.map((faq, index) => (
                   <button
                     key={index}
-                    onClick={() => handleFAQClick(faq)}
+                    onClick={() => setFaqModal(faq)}
                     className="text-left p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100"
                   >
                     <span className="font-light text-gray-700">{faq.question}</span>
