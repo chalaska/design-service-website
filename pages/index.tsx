@@ -265,62 +265,44 @@ export default function Home() {
         <div className="fixed top-6 right-6 z-10">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors mb-2"
           >
             <span className="text-xs font-light uppercase tracking-wide">MENU</span>
-            <span className="text-lg font-extralight">—</span>
+            <span className={`text-lg font-extralight transition-transform duration-300 ${menuOpen ? 'rotate-45' : ''}`}>
+              {menuOpen ? '✕' : '—'}
+            </span>
           </button>
           
           {menuOpen && (
-            <div className="absolute top-8 right-0 bg-white rounded-2xl shadow-lg border border-gray-100 p-4 min-w-48">
-              <div className="space-y-3">
-                <button 
-                  onClick={() => {
-                    handleFAQClick(commonQuestions[0]);
-                    setMenuOpen(false);
-                  }}
-                  className="block w-full text-left text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
-                >
-                  How we work
-                </button>
-                <button 
-                  onClick={() => {
-                    handleFAQClick(commonQuestions[4]);
-                    setMenuOpen(false);
-                  }}
-                  className="block w-full text-left text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
-                >
-                  Who we're for
-                </button>
-                <button 
-                  onClick={() => {
-                    handleFAQClick(commonQuestions[1]);
-                    setMenuOpen(false);
-                  }}
-                  className="block w-full text-left text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
-                >
-                  How much
-                </button>
-                <button 
-                  onClick={() => {
-                    // Scroll to recent projects section
-                    document.querySelector('.recent-projects')?.scrollIntoView({ behavior: 'smooth' });
-                    setMenuOpen(false);
-                  }}
-                  className="block w-full text-left text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
-                >
-                  Past clients
-                </button>
-                <a 
-                  href="https://calendly.com/your-calendly-link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setMenuOpen(false)}
-                  className="block w-full text-left text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
-                >
-                  Get in touch
-                </a>
-              </div>
+            <div className="text-right space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              <button 
+                onClick={() => {
+                  handleFAQClick(commonQuestions[0]);
+                  setMenuOpen(false);
+                }}
+                className="block w-full text-right text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
+              >
+                How we work
+              </button>
+              <button 
+                onClick={() => {
+                  // Scroll to recent projects section
+                  document.querySelector('.recent-projects')?.scrollIntoView({ behavior: 'smooth' });
+                  setMenuOpen(false);
+                }}
+                className="block w-full text-right text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
+              >
+                Past clients
+              </button>
+              <a 
+                href="https://calendly.com/your-calendly-link"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMenuOpen(false)}
+                className="block w-full text-right text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
+              >
+                Get in touch
+              </a>
             </div>
           )}
         </div>
