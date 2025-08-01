@@ -71,25 +71,10 @@ export default function Home() {
 
   const isComplete = currentQuestion === questions.length - 1 && projectData.email;
 
-  const handleSubmitAndPay = async () => {
-    try {
-      const response = await fetch('/api/pay', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ projectData }),
-      });
-      
-      const { url } = await response.json();
-      if (url) {
-        window.location.href = url;
-      }
-    } catch (error) {
-      console.error('Error creating checkout session:', error);
-      alert('Something went wrong. Please try again.');
-    }
-  };
+const handleSubmitAndPay = () => {
+  // Open Stripe payment link in new tab
+  window.open('https://buy.stripe.com/00waEY4T36vA4C6daffQI0w', '_blank');
+};
 
   return (
     <>
