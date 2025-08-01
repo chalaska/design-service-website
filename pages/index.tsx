@@ -349,52 +349,6 @@ export default function Home() {
             </div>
           )}
 
-          {/* Recent Projects Section - Only show on first question */}
-          {!isComplete && currentQuestion === 0 && (
-            <div className="mt-16 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Recent Projects</h3>
-              </div>
-              
-              <div className="flex flex-wrap gap-2">
-                {recentProjects.map((project, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleProjectClick(project.name)}
-                    className="flex items-center gap-2 text-sm bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-full transition-colors border border-gray-200"
-                  >
-                    <span className="text-base">{project.icon}</span>
-                    <span className="truncate max-w-xs font-light">{project.name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* FAQ Section */}
-          {!isComplete && (
-            <div className="mt-12 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-light text-gray-700 mb-6">
-                Common Questions
-              </h2>
-              
-              <div className="grid gap-3">
-                {commonQuestions.map((faq, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleFAQClick(faq)}
-                    className="text-left p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100"
-                  >
-                    <span className="font-light text-gray-700">{faq.question}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Halaska Method */}
           <div className="mt-16 text-center">
             <div className="bg-white rounded-2xl p-8 border border-gray-100">
