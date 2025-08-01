@@ -227,23 +227,9 @@ export default function Home() {
                   autoFocus
                 />
 
-                {/* Suggestion Chips Below Input */}
+                {/* Only FAQ Suggestion Chips */}
                 {currentQuestion === 0 && (
                   <div className="mt-6">
-                    <p className="text-xs text-gray-400 mb-3 font-light uppercase tracking-wide">Recent Projects</p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {recentProjects.map((project, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleProjectClick(project.name)}
-                          className="flex items-center gap-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-full transition-colors border border-transparent"
-                        >
-                          <span className="text-base">{project.icon}</span>
-                          <span className="truncate max-w-xs font-light">{project.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                    
                     <p className="text-xs text-gray-400 mb-3 font-light uppercase tracking-wide">Common Questions</p>
                     <div className="flex flex-wrap gap-2">
                       {commonQuestions.slice(0, 3).map((faq, index) => (
