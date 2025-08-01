@@ -129,6 +129,12 @@ export default function Home() {
 
       <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <div className="w-full max-w-2xl">
+          {/* Logo and Branding - Always Visible */}
+          <div className="text-center mb-8">
+            <div className="text-6xl font-light text-gray-900 mb-2">—</div>
+            <div className="text-lg font-medium text-gray-700 mb-1">em-dash</div>
+            <div className="text-sm text-gray-500">Professional Design Service</div>
+          </div>
           {!isComplete ? (
             /* Question Flow */
             <div className="text-center">
@@ -281,6 +287,18 @@ export default function Home() {
                   {project}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Halaska Method Section */}
+          <div className="mt-8 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6 border border-indigo-100">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Powered by the Halaska Method™
+              </h3>
+              <p className="text-sm text-gray-600">
+                A design approach built from years of experience by Chris Halaska and the knowledge base from Halaska Studio
+              </p>
             </div>
           </div>
 
