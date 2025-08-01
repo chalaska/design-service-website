@@ -193,9 +193,12 @@ export default function Home() {
           <title>em-dash - Professional Design Service</title>
           <meta name="description" content="Professional design services powered by the Halaska Method" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
         </Head>
 
-        <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6" style={{ fontFamily: 'Geist, system-ui, -apple-system, sans-serif' }}>
           <div className="w-full max-w-2xl">
             
             {/* Logo */}
@@ -251,9 +254,12 @@ export default function Home() {
         <title>em-dash - Professional Design Service</title>
         <meta name="description" content="Professional design services powered by the Halaska Method" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </Head>
 
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6" style={{ fontFamily: 'Geist, system-ui, -apple-system, sans-serif' }}>
         <div className="w-full max-w-2xl">
           
           {/* Logo Section */}
