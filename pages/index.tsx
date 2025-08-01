@@ -110,10 +110,6 @@ export default function Home() {
     setShowFAQResult(faq);
   };
 
-  const handleProjectClick = (projectName: string) => {
-    setCurrentInput(projectName);
-  };
-
   const isComplete = currentQuestion === questions.length - 1 && projectData.email;
 
   const handleSubmitAndPay = () => {
