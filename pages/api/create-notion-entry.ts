@@ -13,83 +13,59 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { type, projectData, contactData } = req.body;
 
-    let properties;
+    let properties: any = {};
     
     if (type === 'Contact Form') {
-      properties = {
-        'Task Name': {
+      // Only add properties that exist in your database and have values
+      if (contactData.businessName) {
+        properties['Task Name'] = {
           rich_text: [{ text: { content: `${contactData.businessName} - Contact Inquiry` } }]
-        },
-        'Business Name': {
-          rich_text: [{ text: { content: contactData.businessName || '' } }]
-        },
-        'Client Name': {
-          rich_text: [{ text: { content: contactData.name || '' } }]
-        },
-        'Client Email': {
-          email: contactData.email || ''
-        },
-        'Entry Type': {
-          select: { name: 'Contact Form' }
-        },
-        'Project Type': {
-          select: { name: contactData.projectType || 'Other' }
-        },
-        'Description': {
-          rich_text: [{ text: { content: contactData.description || '' } }]
-        },
-        'Timeline': {
-          select: { name: contactData.timeline || 'Not sure' }
-        },
-        'Status': {
-          select: { name: 'New Lead' }
-        }
+        };
+        properties['Business Name'] = {
+          rich_text: [{ text: { content: contactData.businessName } }]
+        };
+      }
+      
+      if (contactData.name) {
+        properties['Client Name'] = {
+          rich_text: [{ text: { content: contactData.name } }]
+        };
+      }
+      
+      if (contactData.email) {
+        properties['Client Email'] = {
+          email: contactData.email
+        };
+      }
+      
+      // Always set Entry Type
+      properties['Entry Type'] = {
+        select: { name: 'Contact Form' }
       };
-    } else {
-      // Project Brief
-      properties = {
-        'Task Name': {
-          rich_text: [{ text: { content: `${projectData.businessName} - ${projectData.whatToCreate}` } }]
-        },
-        'Business Name': {
-          rich_text: [{ text: { content: projectData.businessName } }]
-        },
-        'Client Email': {
-          email: projectData.email
-        },
-        'Entry Type': {
-          select: { name: 'Project Brief' }
-        },
-        'Project Type': {
-          select: { name: projectData.whatToCreate }
-        },
-        'Description': {
-          rich_text: [{ 
-            text: { 
-              content: `Audience: ${projectData.whoIsItFor}\nGoal: ${projectData.goal}\nFeeling: ${projectData.feeling}` 
-            } 
-          }]
-        },
-        'Status': {
-          select: { name: 'Pending Payment' }
-        }
+      
+      if (contactData.projectType) {
+        properties['Project Type'] = {
+          select: { name: contactData.projectType }
+        };
+      }
+      
+      if (contactData.description) {
+        properties['Description'] = {
+          rich_text: [{ text: { content: contactData.description } }]
+        };
+      }
+      
+      if (contactData.timeline) {
+        properties['Timeline'] = {
+          select: { name: contactData.timeline }
+        };
+      }
+      
+      // Always set Status
+      properties['Status'] = {
+        select: { name: 'New Lead' }
       };
-    }
-
-    const response = await notion.pages.create({
-      parent: {
-        database_id: process.env.NOTION_DATABASE_ID!,
-      },
-      properties,
-    });
-
-    console.log('Success! Created entry:', response.id);
-    res.status(200).json({ success: true, id: response.id });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ 
-      error: 'Failed to create entry', 
-      details: error.message 
-    });
-  }
-}
+      
+    } else if (type === 'Project Brief') {
+      // Project Brief handling
+      if (projectData.businessName && pro
