@@ -38,7 +38,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
       }
       
-      // Always set Entry Type
       properties['Entry Type'] = {
         select: { name: 'Contact Form' }
       };
@@ -61,11 +60,72 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
       }
       
-      // Always set Status
       properties['Status'] = {
         select: { name: 'New Lead' }
       };
       
     } else if (type === 'Project Brief') {
-      // Project Brief handling
-      if (projectData.businessName && pro
+      if (projectData.businessName && projectData.whatToCreate) {
+        properties['Task Name'] = {
+          rich_text: [{ text: { content: `${projectData.businessName} - ${projectData.whatToCreate}` } }]
+        };
+      }
+      
+      if (projectData.businessName) {
+        properties['Business Name'] = {
+          rich_text: [{ text: { content: projectData.businessName } }]
+        };
+      }
+      
+      if (projectData.email) {
+        properties['Client Email'] = {
+          email: projectData.email
+        };
+      }
+      
+      properties['Entry Type'] = {
+        select: { name: 'Project Brief' }
+      };
+      
+      if (projectData.whatToCreate) {
+        properties['Project Type'] = {
+          select: { name: projectData.whatToCreate }
+        };
+      }
+      
+      if (projectData.whoIsItFor || projectData.goal || projectData.feeling) {
+        const description = [
+          projectData.whoIsItFor ? `Audience: ${projectData.whoIsItFor}` : '',
+          projectData.goal ? `Goal: ${projectData.goal}` : '',
+          projectData.feeling ? `Feeling: ${projectData.feeling}` : ''
+        ].filter(Boolean).join('\n');
+        
+        properties['Description'] = {
+          rich_text: [{ text: { content: description } }]
+        };
+      }
+      
+      properties['Status'] = {
+        select: { name: 'Pending Payment' }
+      };
+    }
+
+    console.log('Properties being sent:', JSON.stringify(properties, null, 2));
+
+    const response = await notion.pages.create({
+      parent: {
+        database_id: process.env.NOTION_DATABASE_ID!,
+      },
+      properties,
+    });
+
+    console.log('Success! Created entry:', response.id);
+    res.status(200).json({ success: true, id: response.id });
+  } catch (error) {
+    console.error('Detailed error:', error);
+    res.status(500).json({ 
+      error: 'Failed to create entry', 
+      details: error.message
+    });
+  }
+}
