@@ -16,9 +16,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let properties: any = {};
     
     if (type === 'Contact Form') {
+      // Use business name as the title
       if (contactData.businessName) {
         properties['Task Name'] = {
-          rich_text: [{ text: { content: `${contactData.businessName} - Contact Inquiry` } }]
+          rich_text: [{ text: { content: contactData.businessName } }]
         };
         properties['Business Name'] = {
           rich_text: [{ text: { content: contactData.businessName } }]
@@ -64,13 +65,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
       
     } else if (type === 'Project Brief') {
-      if (projectData.businessName && projectData.whatToCreate) {
-        properties['Task Name'] = {
-          rich_text: [{ text: { content: `${projectData.businessName} - ${projectData.whatToCreate}` } }]
-        };
-      }
-      
+      // Use business name as the title
       if (projectData.businessName) {
+        properties['Task Name'] = {
+          rich_text: [{ text: { content: projectData.businessName } }]
+        };
         properties['Business Name'] = {
           rich_text: [{ text: { content: projectData.businessName } }]
         };
