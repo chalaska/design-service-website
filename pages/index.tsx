@@ -171,6 +171,7 @@ export default function Home() {
   const [showContactForm, setShowContactForm] = useState(false);
   const [projectsToShow, setProjectsToShow] = useState(6);
   const [faqModal, setFaqModal] = useState<{question: string, answer: string} | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
 
   const handleNext = () => {
     if (currentInput.trim()) {
