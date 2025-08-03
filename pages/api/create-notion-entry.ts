@@ -16,7 +16,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let properties: any = {};
     
     if (type === 'Contact Form') {
-      // Only add properties that exist in your database and have values
       if (contactData.businessName) {
         properties['Task Name'] = {
           rich_text: [{ text: { content: `${contactData.businessName} - Contact Inquiry` } }]
@@ -60,8 +59,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
       }
       
+      // Use status format instead of select
       properties['Status'] = {
-        select: { name: 'New Lead' }
+        status: { name: 'New Lead' }
       };
       
     } else if (type === 'Project Brief') {
@@ -102,30 +102,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         
         properties['Description'] = {
           rich_text: [{ text: { content: description } }]
-        };
-      }
-      
-      properties['Status'] = {
-        select: { name: 'Pending Payment' }
-      };
-    }
-
-    console.log('Properties being sent:', JSON.stringify(properties, null, 2));
-
-    const response = await notion.pages.create({
-      parent: {
-        database_id: process.env.NOTION_DATABASE_ID!,
-      },
-      properties,
-    });
-
-    console.log('Success! Created entry:', response.id);
-    res.status(200).json({ success: true, id: response.id });
-  } catch (error) {
-    console.error('Detailed error:', error);
-    res.status(500).json({ 
-      error: 'Failed to create entry', 
-      details: error.message
-    });
-  }
-}
