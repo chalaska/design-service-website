@@ -307,7 +307,7 @@ export default function Home() {
         {/* FAQ Modal */}
         {faqModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl p-8 max-w-md w-full relative">
+            <div className="bg-white rounded border border-gray-100 p-8 max-w-md w-full relative">
               <button
                 onClick={() => setFaqModal(null)}
                 className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors"
@@ -316,7 +316,7 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              <h3 className="text-lg font-medium text-gray-800 mb-4 pr-8">{faqModal.question}</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 pr-8">{faqModal.question}</h3>
               <p className="text-gray-600 font-light leading-relaxed">{faqModal.answer}</p>
             </div>
           </div>
@@ -338,7 +338,7 @@ export default function Home() {
           >
             <span className="text-xs font-light uppercase tracking-wide">MENU</span>
             <span className={`text-lg font-extralight transition-transform duration-300 ${menuOpen ? 'rotate-45' : ''}`}>
-              {menuOpen ? '✕' : '—'}
+              {menuOpen ? '—' : '+'}
             </span>
           </button>
           
@@ -392,14 +392,14 @@ export default function Home() {
           {/* Logo Section */}
           <div className={`text-center mb-16 transition-opacity duration-300 ${isFocused && !isComplete ? 'opacity-30' : 'opacity-100'}`}>
             <div className="text-8xl font-extralight text-gray-800 mb-4 tracking-wider">—</div>
-            <div className="text-2xl font-light text-gray-700 mb-2 tracking-wide">em-dash</div>
-            <div className="text-gray-500 font-light">Professional Design Service</div>
+            <div className="text-3xl font-medium text-gray-700 mb-2 tracking-wide">em-dash</div>
+            <div className="text-lg text-gray-500 font-light">Professional Design Service</div>
           </div>
 
           {!isComplete ? (
             /* Question Flow */
             <div className={`text-center transition-opacity duration-300 ${isFocused ? 'relative z-30' : ''}`}>
-              <div className={`bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-8 relative ${isFocused ? 'shadow-2xl' : ''} transition-shadow duration-300`}>
+              <div className={`bg-white rounded border border-gray-100 p-8 mb-8 relative ${isFocused ? 'shadow-2xl' : ''} transition-shadow duration-300`}>
                 {/* Progress in top right */}
                 {hasStarted && (
                   <div className="absolute top-6 right-6 text-right">
@@ -422,7 +422,7 @@ export default function Home() {
                 )}
 
                 {/* Question title inside the box - left aligned */}
-                <h1 className="text-2xl md:text-3xl font-light text-gray-800 mb-6 leading-tight text-left">
+                <h1 className="text-3xl md:text-4xl font-semibold text-gray-800 mb-6 leading-tight text-left">
                   {questions[currentQuestion].question}
                 </h1>
 
@@ -432,7 +432,7 @@ export default function Home() {
                   onChange={(e) => setCurrentInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder={questions[currentQuestion].placeholder}
-                  className="w-full text-lg p-6 border border-gray-200 rounded-2xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
+                  className="w-full text-lg p-6 border border-gray-200 rounded focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
                   autoFocus
                 />
 
@@ -444,7 +444,7 @@ export default function Home() {
                         <button
                           key={index}
                           onClick={() => handleChipSelect(chip)}
-                          className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-full transition-colors font-light border border-gray-200"
+                          className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 px-3 py-2 rounded border border-gray-200 transition-colors font-light"
                         >
                           {chip}
                         </button>
@@ -462,7 +462,7 @@ export default function Home() {
                         <button
                           key={index}
                           onClick={() => setFaqModal(faq)}
-                          className="text-sm bg-transparent hover:bg-gray-50 text-gray-600 hover:text-gray-800 px-3 py-2 rounded-full transition-colors font-light border border-gray-300"
+                          className="text-sm bg-transparent hover:bg-gray-50 text-gray-600 hover:text-gray-800 px-3 py-2 rounded border border-gray-300 transition-colors font-light"
                         >
                           {faq.question}
                         </button>
@@ -477,7 +477,7 @@ export default function Home() {
                   {hasStarted && (
                     <button
                       onClick={resetToHome}
-                      className="w-10 h-10 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-800 rounded-full border border-gray-200 transition-all flex items-center justify-center"
+                      className="w-10 h-10 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-800 rounded border border-gray-200 transition-all flex items-center justify-center"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -508,7 +508,7 @@ export default function Home() {
                 <button
                   onClick={handleNext}
                   disabled={!currentInput.trim()}
-                  className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-4 px-8 rounded-xl transition-all disabled:hover:scale-100"
+                  className="bg-gray-800 hover:bg-gray-900 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-8 rounded transition-all disabled:hover:scale-100"
                 >
                   {currentQuestion === questions.length - 1 ? 'Complete' : 'Continue'}
                 </button>
@@ -517,13 +517,13 @@ export default function Home() {
           ) : (
             /* Project Brief & Actions */
             <div className="text-center">
-              <h1 className="text-3xl md:text-4xl font-light text-gray-800 mb-12">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-12">
                 Your Project Brief
               </h1>
 
               {/* Project Brief Card */}
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-8 text-left">
-                <h2 className="text-2xl font-light text-gray-800 mb-8">Project Overview</h2>
+              <div className="bg-white rounded border border-gray-100 p-8 mb-8 text-left">
+                <h2 className="text-3xl font-semibold text-gray-800 mb-8">Project Overview</h2>
                 
                 <div className="space-y-6">
                   <div>
@@ -557,7 +557,7 @@ export default function Home() {
               <div className="space-y-4 mb-8">
                 <button
                   onClick={handleSubmitAndPay}
-                  className="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-4 px-8 rounded-xl transition-all"
+                  className="w-full bg-gray-800 hover:bg-gray-900 text-white font-semibold py-4 px-8 rounded transition-all"
                 >
                   Submit & Pay - $99/month
                 </button>
@@ -569,7 +569,7 @@ export default function Home() {
                       document.querySelector('.contact-form')?.scrollIntoView({ behavior: 'smooth' });
                     }, 100);
                   }}
-                  className="block w-full bg-white hover:bg-gray-100 text-gray-800 font-medium py-4 px-8 rounded-xl border border-gray-200 transition-all text-center"
+                  className="block w-full bg-white hover:bg-gray-100 text-gray-800 font-semibold py-4 px-8 rounded border border-gray-200 transition-all text-center"
                 >
                   Get in touch
                 </button>
@@ -586,8 +586,8 @@ export default function Home() {
 
           {/* FAQ Section - Show after completion */}
           {isComplete && (
-            <div className="mt-12 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-light text-gray-700 mb-6">
+            <div className="mt-12 bg-white rounded border border-gray-100 p-6">
+              <h2 className="text-2xl font-semibold text-gray-700 mb-6">
                 Questions & Answers
               </h2>
               
@@ -596,9 +596,9 @@ export default function Home() {
                   <button
                     key={index}
                     onClick={() => setFaqModal(faq)}
-                    className="text-left p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100"
+                    className="text-left p-4 hover:bg-gray-50 transition-colors rounded border border-gray-100"
                   >
-                    <span className="font-light text-gray-700">{faq.question}</span>
+                    <span className="font-medium text-gray-700">{faq.question}</span>
                   </button>
                 ))}
               </div>
@@ -786,7 +786,7 @@ export default function Home() {
                     </button>
                   </div>
                   
-                  <form className="space-y-6">
+                  <form className="space-y-6" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
@@ -794,6 +794,8 @@ export default function Home() {
                         </label>
                         <input
                           type="text"
+                          name="name"
+                          required
                           className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
                           placeholder="Your name"
                         />
@@ -804,6 +806,8 @@ export default function Home() {
                         </label>
                         <input
                           type="email"
+                          name="email"
+                          required
                           className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light"
                           placeholder="your@email.com"
                         />
@@ -814,14 +818,14 @@ export default function Home() {
                       <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
                         Project Type
                       </label>
-                      <select className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light">
-                        <option>Select project type</option>
-                        <option>Brand Identity</option>
-                        <option>Website Design</option>
-                        <option>Product Design</option>
-                        <option>Mobile App</option>
-                        <option>Marketing Materials</option>
-                        <option>Other</option>
+                      <select name="project_type" required className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light">
+                        <option value="">Select project type</option>
+                        <option value="Brand Identity">Brand Identity</option>
+                        <option value="Website Design">Website Design</option>
+                        <option value="Product Design">Product Design</option>
+                        <option value="Mobile App">Mobile App</option>
+                        <option value="Marketing Materials">Marketing Materials</option>
+                        <option value="Other">Other</option>
                       </select>
                     </div>
                     
@@ -830,7 +834,9 @@ export default function Home() {
                         Tell us about your project
                       </label>
                       <textarea
+                        name="project_description"
                         rows={4}
+                        required
                         className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light resize-none"
                         placeholder="Describe your project, goals, and any specific requirements..."
                       ></textarea>
@@ -840,14 +846,17 @@ export default function Home() {
                       <label className="block text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
                         Timeline
                       </label>
-                      <select className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light">
-                        <option>Select timeline</option>
-                        <option>Rush (1-2 weeks)</option>
-                        <option>Standard (2-4 weeks)</option>
-                        <option>Flexible (1-2 months)</option>
-                        <option>Not sure</option>
+                      <select name="timeline" required className="w-full p-4 border border-gray-200 rounded-xl focus:border-gray-400 focus:outline-none transition-colors bg-gray-50 focus:bg-white font-light">
+                        <option value="">Select timeline</option>
+                        <option value="Rush (1-2 weeks)">Rush (1-2 weeks)</option>
+                        <option value="Standard (2-4 weeks)">Standard (2-4 weeks)</option>
+                        <option value="Flexible (1-2 months)">Flexible (1-2 months)</option>
+                        <option value="Not sure">Not sure</option>
                       </select>
                     </div>
+
+                    <input type="hidden" name="_subject" value="New Contact Form Submission - em-dash" />
+                    <input type="hidden" name="_next" value="https://your-site.vercel.app/?submitted=true" />
                     
                     <button
                       type="submit"
