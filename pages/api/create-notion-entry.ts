@@ -59,7 +59,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
       }
       
-      // Use status format instead of select
       properties['Status'] = {
         status: { name: 'New Lead' }
       };
@@ -102,3 +101,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         
         properties['Description'] = {
           rich_text: [{ text: { content: description } }]
+        };
+      }
+      
+      properties['Status'] = {
+        status: { name: 'Pending Payment' }
+      };
+    }
+
+    console.log('Properties being sent:', JSON.stringify(properties, null, 2));
+
+    const response = await notion.pages.create({
+      parent: {
+        database_id: process.env.NOTION_DATABASE_ID!,
+      },
+      properties,
+    });
+
+    console.log('Success! Created entry:', response.id);
+    res.status(200).json({ success: true, id: response.id });
+  } catch (error) {
+    console.error('Detailed error:', error);
+    res.status(500).json({ 
+      error: 'Failed to create entry', 
+      details: error.message
+    });
+  }
+}
