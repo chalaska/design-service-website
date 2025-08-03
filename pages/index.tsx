@@ -355,6 +355,15 @@ export default function Home() {
               </button>
               <button 
                 onClick={() => {
+                  document.querySelector('.pricing-section')?.scrollIntoView({ behavior: 'smooth' });
+                  setMenuOpen(false);
+                }}
+                className="block w-full text-right text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
+              >
+                Pricing
+              </button>
+              <button 
+                onClick={() => {
                   document.querySelector('.recent-projects')?.scrollIntoView({ behavior: 'smooth' });
                   setMenuOpen(false);
                 }}
@@ -373,15 +382,6 @@ export default function Home() {
                 className="block w-full text-right text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
               >
                 Get in touch
-              </button>
-              <button 
-                onClick={() => {
-                  resetToHome();
-                  setMenuOpen(false);
-                }}
-                className="block w-full text-right text-sm font-light text-gray-700 hover:text-gray-900 transition-colors"
-              >
-                Home
               </button>
             </div>
           )}
@@ -636,8 +636,75 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Pricing Section */}
+          <div className="mt-16 text-center pricing-section">
+            <div className="bg-white rounded-2xl p-8 border border-gray-100">
+              <h3 className="text-2xl font-light text-gray-800 mb-6">
+                Simple, Transparent Pricing
+              </h3>
+              
+              <div className="mb-8">
+                <div className="text-4xl font-light text-gray-900 mb-2">
+                  From $6,000<span className="text-lg text-gray-500">/month</span>
+                </div>
+                <p className="text-gray-600 font-light">
+                  Scale velocity and capacity as your needs grow
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6 text-left">
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <h4 className="font-medium text-gray-800 mb-3 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-gray-800 rounded-full"></span>
+                    Submit Briefs
+                  </h4>
+                  <p className="text-sm text-gray-600 font-light leading-relaxed">
+                    Add your design briefs and tasks directly to our platform. Clear requirements get the best results.
+                  </p>
+                </div>
+                
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <h4 className="font-medium text-gray-800 mb-3 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-gray-800 rounded-full"></span>
+                    Immediate Start
+                  </h4>
+                  <p className="text-sm text-gray-600 font-light leading-relaxed">
+                    Our designers begin work immediately on your submitted tasks. No delays, no waiting lists.
+                  </p>
+                </div>
+                
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <h4 className="font-medium text-gray-800 mb-3 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-gray-800 rounded-full"></span>
+                    Regular Updates
+                  </h4>
+                  <p className="text-sm text-gray-600 font-light leading-relaxed">
+                    Expect progress updates and deliverables at least every 48 hours. Stay informed throughout.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-gray-100">
+                <p className="text-sm text-gray-500 font-light mb-4">
+                  Need higher velocity or additional capacity? We can scale our team to match your timeline and workload.
+                </p>
+                <button
+                  onClick={() => {
+                    setShowContactForm(true);
+                    setTimeout(() => {
+                      document.querySelector('.contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }}
+                  className="bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 px-6 rounded-xl transition-all"
+                >
+                  Discuss Your Needs
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* Recent Projects Section - Card Layout */}
-          <div className="mt-12 recent-projects">
+          <div className="mt-16 recent-projects">
             <h3 className="text-lg font-light text-gray-600 mb-6 text-center">Recent Projects</h3>
             
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
