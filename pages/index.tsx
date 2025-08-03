@@ -6,6 +6,7 @@ interface ProjectData {
   whoIsItFor: string;
   goal: string;
   feeling: string;
+  businessName: string;
   email: string;
 }
 
@@ -32,6 +33,12 @@ const questions = [
     key: 'feeling' as keyof ProjectData,
     question: 'How do you want it to feel?',
     placeholder: 'e.g., Modern and clean, playful and vibrant, professional and trustworthy...',
+    chips: []
+  },
+  {
+    key: 'businessName' as keyof ProjectData,
+    question: "What's your business name?",
+    placeholder: 'Your business or organization name',
     chips: []
   },
   {
@@ -151,6 +158,7 @@ export default function Home() {
     whoIsItFor: '',
     goal: '',
     feeling: '',
+    businessName: '',
     email: ''
   });
   const [currentInput, setCurrentInput] = useState('');
@@ -183,7 +191,36 @@ export default function Home() {
         if (currentQuestion + 1 >= 1) {
           setIsFocused(true);
         }
+      } else {
+        // This is the last question, handle project brief submission
+        handleProjectBriefSubmission();
       }
+    }
+  };
+
+  const handleProjectBriefSubmission = async () => {
+    try {
+      const response = await fetch('/api/create-notion-entry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'Project Brief',
+          projectData: projectData
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Project brief created:', result);
+        // Continue with existing completion flow
+      } else {
+        console.error('Failed to create project brief');
+      }
+    } catch (error) {
+      console.error('Error creating project brief:', error);
+    }
     }
   };
 
@@ -222,6 +259,7 @@ export default function Home() {
       whoIsItFor: '',
       goal: '',
       feeling: '',
+      businessName: '',
       email: ''
     });
     setCurrentInput('');
@@ -719,6 +757,7 @@ export default function Home() {
                       whoIsItFor: '',
                       goal: '',
                       feeling: '',
+                      businessName: '',
                       email: ''
                     });
                     setHasStarted(true);
