@@ -11,17 +11,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    console.log('Starting Notion API call...');
     const { type, projectData, contactData } = req.body;
-    console.log('Request type:', type);
 
     let properties;
     
     if (type === 'Contact Form') {
-      console.log('Creating Contact Form entry...');
       properties = {
         'Task Name': {
-          title: [{ text: { content: `${contactData.businessName} - Contact Inquiry` } }]
+          rich_text: [{ text: { content: `${contactData.businessName} - Contact Inquiry` } }]
         },
         'Business Name': {
           rich_text: [{ text: { content: contactData.businessName || '' } }]
@@ -48,10 +45,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           select: { name: 'New Lead' }
         }
       };
+    } else {
+      // Project Brief
+      properties = {
+        'Task Name': {
+          rich_text: [{ text: { content: `${projectData.businessName} - ${projectData.whatToCreate}` } }]
+        },
+        'Business Name': {
+          rich_text: [{ text: { content: projectData.businessName } }]
+        },
+        'Client Email': {
+          email: projectData.email
+        },
+        'Entry Type': {
+          select: { name: 'Project Brief' }
+        },
+        'Project Type': {
+          select: { name: projectData.whatToCreate }
+        },
+        'Description': {
+          rich_text: [{ 
+            text: { 
+              content: `Audience: ${projectData.whoIsItFor}\nGoal: ${projectData.goal}\nFeeling: ${projectData.feeling}` 
+            } 
+          }]
+        },
+        'Status': {
+          select: { name: 'Pending Payment' }
+        }
+      };
     }
-
-    console.log('Properties to send:', JSON.stringify(properties, null, 2));
-    console.log('Database ID:', process.env.NOTION_DATABASE_ID);
 
     const response = await notion.pages.create({
       parent: {
@@ -60,14 +83,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       properties,
     });
 
-    console.log('Notion API success:', response.id);
+    console.log('Success! Created entry:', response.id);
     res.status(200).json({ success: true, id: response.id });
   } catch (error) {
-    console.error('Detailed error:', error);
+    console.error('Error:', error);
     res.status(500).json({ 
       error: 'Failed to create entry', 
-      details: error.message,
-      code: error.code 
+      details: error.message 
     });
   }
 }
