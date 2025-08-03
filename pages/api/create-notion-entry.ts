@@ -11,70 +11,47 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    console.log('Starting Notion API call...');
     const { type, projectData, contactData } = req.body;
+    console.log('Request type:', type);
 
     let properties;
     
-    if (type === 'Project Brief') {
-      properties = {
-        'Task Name': {
-          title: [{ text: { content: `${projectData.businessName} - ${projectData.whatToCreate}` } }]
-        },
-        'Business Name': {
-          rich_text: [{ text: { content: projectData.businessName } }]
-        },
-        'Client Email': {
-          email: projectData.email
-        },
-        'Entry Type': {
-          select: { name: 'Project Brief' }
-        },
-        'Project Type': {
-          select: { name: projectData.whatToCreate }
-        },
-        'Description': {
-          rich_text: [{ 
-            text: { 
-              content: `Audience: ${projectData.whoIsItFor}\nGoal: ${projectData.goal}\nFeeling: ${projectData.feeling}` 
-            } 
-          }]
-        },
-        'Status': {
-          select: { name: 'Pending Payment' }
-        }
-      };
-    } else {
-      // Contact Form
+    if (type === 'Contact Form') {
+      console.log('Creating Contact Form entry...');
       properties = {
         'Task Name': {
           title: [{ text: { content: `${contactData.businessName} - Contact Inquiry` } }]
         },
         'Business Name': {
-          rich_text: [{ text: { content: contactData.businessName } }]
+          rich_text: [{ text: { content: contactData.businessName || '' } }]
         },
         'Client Name': {
-          rich_text: [{ text: { content: contactData.name } }]
+          rich_text: [{ text: { content: contactData.name || '' } }]
         },
         'Client Email': {
-          email: contactData.email
+          email: contactData.email || ''
         },
         'Entry Type': {
           select: { name: 'Contact Form' }
         },
         'Project Type': {
-          select: { name: contactData.projectType }
+          select: { name: contactData.projectType || 'Other' }
         },
         'Description': {
-          rich_text: [{ text: { content: contactData.description } }]
+          rich_text: [{ text: { content: contactData.description || '' } }]
         },
         'Timeline': {
-          select: { name: contactData.timeline }
+          select: { name: contactData.timeline || 'Not sure' }
         },
         'Status': {
           select: { name: 'New Lead' }
         }
       };
     }
+
+    console.log('Properties to send:', JSON.stringify(properties, null, 2));
+    console.log('Database ID:', process.env.NOTION_DATABASE_ID);
 
     const response = await notion.pages.create({
       parent: {
@@ -83,9 +60,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       properties,
     });
 
+    console.log('Notion API success:', response.id);
     res.status(200).json({ success: true, id: response.id });
   } catch (error) {
-    console.error('Error creating Notion entry:', error);
-    res.status(500).json({ error: 'Failed to create entry', details: error.message });
+    console.error('Detailed error:', error);
+    res.status(500).json({ 
+      error: 'Failed to create entry', 
+      details: error.message,
+      code: error.code 
+    });
   }
 }
