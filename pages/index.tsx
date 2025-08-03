@@ -163,7 +163,6 @@ export default function Home() {
   });
   const [currentInput, setCurrentInput] = useState('');
   const [showFAQResult, setShowFAQResult] = useState<{question: string, answer: string} | null>(null);
-  const [hasStarted, setHasStarted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedChips, setSelectedChips] = useState<string[]>([]);
   const [availableChips, setAvailableChips] = useState<string[]>(questions[0].chips);
