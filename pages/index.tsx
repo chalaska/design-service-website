@@ -204,7 +204,14 @@ export default function Home() {
         },
         body: JSON.stringify({
           type: 'Project Brief',
-          projectData: projectData
+          projectData: {
+            whatToCreate: projectData.whatToCreate,
+            whoIsItFor: projectData.whoIsItFor,
+            goal: projectData.goal,
+            feeling: projectData.feeling,
+            businessName: projectData.businessName,
+            email: projectData.email
+          }
         }),
       });
 
@@ -777,23 +784,30 @@ export default function Home() {
                           body: JSON.stringify({
                             type: 'Contact Form',
                             contactData: {
-                              name: formData.get('name'),
-                              businessName: formData.get('business_name'),
-                              email: formData.get('email'),
-                              projectType: formData.get('project_type'),
-                              description: formData.get('project_description'),
-                              timeline: formData.get('timeline')
+                              name: formData.get('name') as string,
+                              businessName: formData.get('business_name') as string,
+                              email: formData.get('email') as string,
+                              projectType: formData.get('project_type') as string,
+                              description: formData.get('project_description') as string,
+                              timeline: formData.get('timeline') as string
                             }
                           }),
                         });
 
                         if (response.ok) {
+                          const result = await response.json();
+                          console.log('Contact form submitted:', result);
                           alert('Message sent successfully!');
                           setShowContactForm(false);
+                          // Reset form
+                          (e.target as HTMLFormElement).reset();
                         } else {
+                          const error = await response.json();
+                          console.error('API Error:', error);
                           alert('Failed to send message. Please try again.');
                         }
                       } catch (error) {
+                        console.error('Network Error:', error);
                         alert('Error sending message. Please try again.');
                       }
                     }}>
