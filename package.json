@@ -14,8 +14,7 @@
     "react-dom": "^18",
     "stripe": "^14.0.0",
     "@notionhq/client": "^2.2.0"
-  }
-},
+  },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
